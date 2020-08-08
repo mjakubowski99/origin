@@ -17,7 +17,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
 Route::get('/home', 'HomeController@index')->name('home');
 
@@ -25,7 +25,7 @@ Route::get('profile', 'ProfileController@index')->name('profile');
 
 Route::get('customize', function(){
     return view('customize.index');
-})->middleware('adminCheck')->name('customize');
+})->middleware(['adminCheck', 'verified'])->name('customize');
 
 Route::get('customizeTrain', 'CustomizeController@index')->middleware('adminCheck')->name('customizeTrain');
 Route::post('customizeTrain', 'CustomizeController@store')->middleware('adminCheck');
