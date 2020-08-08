@@ -85,26 +85,18 @@
                         </div>
                         <div class="col-md-3 col-xs-6 text-center">
                             <label for="train-search"> Wyszukaj pociąg </label><br>
-                            <input type="text" id="train-search" name="train-search" class="form-control" data-toggle="collapse" href="#collapseTrains" role="button" aria-expanded="false" aria-controls="collapseTrains" >
-
-                            <div class="collapse text-dark" id="collapseTrains">
-                                <ul class="list-group text-center" id="trains">
-                                    <li class="list-group-item text-center"></li>
-                                </ul>
-                            </div>
+                            <input type="text" id="train-search" name="train-search" class="form-control"/>
+                            <ul class="list-group text-center text-dark" id="trains">
+                                <li class="list-group-item text-center"> </li>
+                            </ul>
                         </div>
 
                         <div class="col-md-3 col-xs-6 text-center">
                             <label for="trace-search"> Wyszukaj trase </label><br>
-                            <input type="text" name="trace-search" class="form-control" data-toggle="collapse" href="#collapseTraces" role="button" aria-expanded="false" aria-controls="collapseTraces"/>
-
-                            <div class="collapse text-dark" id="collapseTraces">
-                                <ul class="list-group text-center">
-                                    @foreach( $traces as $trace )
-                                        <li class="list-group-item text-center">{{ $trace->NAME }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
+                            <input type="text" id="trace-search" name="trace-search" class="form-control"/>
+                            <ul class="list-group text-center text-dark" id="traces">
+                                <li class="list-group-item text-center"> </li>
+                            </ul>
                         </div>
                     </div>
 
@@ -113,20 +105,42 @@
     
             <script type="text/javascript">
                let trains =  <?php echo json_encode($trains) ?>;
-               let input = document.getElementById('train-search');
-               let trainsCollapse = document.getElementById('trains')
+               let traces =  <?php echo json_encode($traces) ?>;
+               let inputTrain = document.getElementById('train-search');
+               let inputTrace = document.getElementById('trace-search');
+               let trainsCollapse = document.getElementById('trains');
+               let tracesCollapse = document.getElementById('traces');
 
-               input.addEventListener( 'keyup', (e) => {
-                    $(trainsCollapse).empty();
-                    $(trains).each( (index, element) => {
-                        if( e.target.value != '' && element.name.startsWith( e.target.value ) ){
-                            let listElement = document.createElement('li');
-                            listElement.innerHTML = element.name;
-                            listElement.setAttribute('class', 'list-group-item text-center')
-                            trainsCollapse.appendChild(listElement);
-                        }
+               function setEventToSearcher1(input, collapse, jsonObj){
+                    input.addEventListener( 'keyup', (e) => {
+                            $(collapse).empty();
+                            $(jsonObj).each( (index, element) => {
+                                if( e.target.value != '' && element.name.startsWith( e.target.value ) ){
+                                    let listElement = document.createElement('li');
+                                    listElement.innerHTML = element.name;
+                                    listElement.setAttribute('class', 'list-group-item text-center')
+                                    collapse.appendChild(listElement);
+                                }
+                            });
                     });
-               });
+               }
+
+               function setEventToSearcher2(input, collapse, jsonObj){
+                    input.addEventListener( 'keyup', (e) => {
+                            $(collapse).empty();
+                            $(jsonObj).each( (index, element) => {
+                                if( e.target.value != '' && element.NAME.startsWith( e.target.value ) ){
+                                    let listElement = document.createElement('li');
+                                    listElement.innerHTML = element.NAME;
+                                    listElement.setAttribute('class', 'list-group-item text-center')
+                                    collapse.appendChild(listElement);
+                                }
+                            });
+                    });
+               }
+
+               setEventToSearcher1(inputTrain, trainsCollapse, trains);
+               setEventToSearcher2(inputTrace, tracesCollapse, traces);
 
             </script>
     </body>
