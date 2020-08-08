@@ -20,7 +20,7 @@
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"> </script> 
     </head>
-    <body>
+    <body class="bg-light">
        
             <nav class="navbar navbar-expand-lg navbar-light bg-info">
                 <a class="navbar-brand text-light" href="{{url('/')}}">Train Service </a>
@@ -40,6 +40,14 @@
                     </form>
                 </div>
             </nav>
+
+            <div class="jumbotron text-center">
+                <h1 class="display-4">Obsluga</h1>
+                <p class="lead"> Wpisujemy date przyjazdu i odjazdu w . Wyszukujemy interesujący nas pociąg, który ma jechać na interesującej nas trasie</p>
+                <hr class="my-4">
+                <p>Kazde pole musi być uzupełnione inaczej formularz nie przejdzie. Zostaniesz poinformowany o tym czy sukcesywnie
+                udało ci się dodać przejazd do bazy danych.</p>
+            </div>
      
             @if ($errors->any())
                 <div class="alert alert-danger text-center">
@@ -62,50 +70,64 @@
             @endif
        
        
-            <div class="pt-5 ml-5 mr-5">
-                <form id="form-arrives" action="/customizeArrives" method="POST" class="text-center p-5" style=" border: 2px solid #f2f2f2; border-radius: 6px;">
+                <form id="form-arrives" action="/customizeArrives" method="POST" class="text-center text-light p-3 bg-info" style=" border: 2px solid #f2f2f2; border-radius: 6px;">
                     @csrf 
                     <div class="h1"> Dodaj przejazd </div>
-                    <label for="begin-at"> Godzina odjazdu </label><br>
-                    <input type="text" name="begin-at"><br>
-                    <label for="arrive-at"> Godzina przyjazdu </label><br>
-                    <input type="text" name="arrive-at" class="mb-5"><br>
 
                     <div class="lists row ml-auto mr-auto" style="border-top: 2px solid #f2f2f2;">
-                        <div class="col-6 text-center pt-5">
-                            <a class="btn btn-info text-light mr-3" data-toggle="collapse" href="#collapseTrains" role="button" aria-expanded="false" aria-controls="collapseTrains">
-                                    Pociagi
-                            </a>
+                        <div class="col-md-3 col-xs-6">
+                                <label for="begin-at"> Godzina odjazdu </label><br>
+                                <input type="text" name="begin-at" class="form-control"><br>
+                        </div>
+                        <div class="col-md-3 col-xs-6">
+                                <label for="arrive-at"> Godzina przyjazdu </label><br>
+                                <input type="text" name="arrive-at" class="form-control">
+                        </div>
+                        <div class="col-md-3 col-xs-6 text-center">
+                            <label for="train-search"> Wyszukaj pociąg </label><br>
+                            <input type="text" id="train-search" name="train-search" class="form-control" data-toggle="collapse" href="#collapseTrains" role="button" aria-expanded="false" aria-controls="collapseTrains" >
 
-                            <div class="collapse" id="collapseTrains">
-                                <ul class="list-group text-center">
-                                    @foreach( $trains as $train )
-                                        <li class="list-group-item w-50 text-center">{{ $train->name }}</li>
-                                    @endforeach
+                            <div class="collapse text-dark" id="collapseTrains">
+                                <ul class="list-group text-center" id="trains">
+                                    <li class="list-group-item text-center"></li>
                                 </ul>
                             </div>
                         </div>
 
-                        <div class="col-6 text-center pt-5">
-                            <a class="btn btn-info text-light" data-toggle="collapse" href="#collapseTraces" role="button" aria-expanded="false" aria-controls="collapseTraces">
-                                    Trasy
-                            </a>
+                        <div class="col-md-3 col-xs-6 text-center">
+                            <label for="trace-search"> Wyszukaj trase </label><br>
+                            <input type="text" name="trace-search" class="form-control" data-toggle="collapse" href="#collapseTraces" role="button" aria-expanded="false" aria-controls="collapseTraces"/>
 
-                            <div class="collapse" id="collapseTraces">
+                            <div class="collapse text-dark" id="collapseTraces">
                                 <ul class="list-group text-center">
                                     @foreach( $traces as $trace )
-                                        <li class="list-group-item w-50 text-center">{{ $trace->NAME }}</li>
+                                        <li class="list-group-item text-center">{{ $trace->NAME }}</li>
                                     @endforeach
                                 </ul>
                             </div>
                         </div>
                     </div>
 
-                    <br> <input id="submiter" type="submit" value="Dodaj przejazd" class="btn btn-info text-light mb-2">
+                    <br> <input id="submiter" type="submit" value="Dodaj przejazd"class="btn btn-light text-dark text-light mb-2">
                 </form>
-            </div>
     
-            <script src="{{asset('js/stations.js')}}">
+            <script type="text/javascript">
+               let trains =  <?php echo json_encode($trains) ?>;
+               let input = document.getElementById('train-search');
+               let trainsCollapse = document.getElementById('trains')
+
+               input.addEventListener( 'keyup', (e) => {
+                    $(trainsCollapse).empty();
+                    $(trains).each( (index, element) => {
+                        if( e.target.value != '' && element.name.startsWith( e.target.value ) ){
+                            let listElement = document.createElement('li');
+                            listElement.innerHTML = element.name;
+                            listElement.setAttribute('class', 'list-group-item text-center')
+                            trainsCollapse.appendChild(listElement);
+                        }
+                    });
+               });
+
             </script>
     </body>
 </html>
