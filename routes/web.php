@@ -25,7 +25,7 @@ Route::get('profile', 'ProfileController@index')->name('profile');
 
 Route::get('customize', function(){
     return view('customize.index');
-})->middleware(['adminCheck', 'verified'])->name('customize');
+})->middleware(['adminCheck'])->name('customize');
 
 Route::get('customizeTrain', 'CustomizeController@index')->middleware('adminCheck')->name('customizeTrain');
 Route::post('customizeTrain', 'CustomizeController@store')->middleware('adminCheck');
