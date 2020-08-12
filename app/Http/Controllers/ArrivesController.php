@@ -28,6 +28,13 @@ class ArrivesController extends Controller
         //
     }
 
+    /** Form validation messages */
+    private $messages = [ 'begin-at.date' => 'Podana wartość dla godziny odjazdu nie jest datą',
+            'arrive-at.date' => 'Podana wartość dla godziny przyjazdu nie jest datą',
+            'arrive-at-hour.regex' => 'Godzina nie zgodna z formatem. Uzyj formatu: [0-24]:[0-60]',
+            'begin-at-hour.regex' => 'Godzina nie zgodna z formatem. Uzyj formatu: [0-24]:[0-60]'
+    ];
+
     /**
      * Store a newly created resource in storage.
      *
@@ -36,7 +43,18 @@ class ArrivesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validateData = $request->validate([
+            'begin-at' => 'required|date', 
+            'begin-at-hour' => ['required', 'regex:/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/'],
+            'arrive-at' => 'required|date', 
+            'arrive-at-hour' => ['required', 'regex:/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/'],
+            'train-search' => 'required', 
+            'trace-search' => 'required',
+        ], $this->messages);
+
+        //Now it's needed to check if train and trace exists in database
+
+        echo 'Request validated';
     }
 
     /**
@@ -47,7 +65,7 @@ class ArrivesController extends Controller
      */
     public function show($id)
     {
-        //
+        
     }
 
     /**

@@ -21,8 +21,9 @@ function checkHour(hours, date){
     return true;
 }
 
-function validateForm(){
+/*function validateForm(){
     const hoursBegin = document.forms['form-arrives']['begin-at-hour'].value;
     const hoursArrive = document.forms['form-arrives']['arrive-at-hour'].value;   
     return checkHour(hoursBegin, 'date-1') && checkHour(hoursArrive, 'date-2');
-}
+} */
+
