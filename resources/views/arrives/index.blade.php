@@ -10,15 +10,20 @@
         <title>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Scripts -->
-        <script src="{{ asset('js/app.js') }}" defer></script>
 
         <!-- Fonts -->
         <link rel="dns-prefetch" href="//fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="/resources/demos/style.css">
+
+        <script src="{{ asset('js/app.js') }}"> </script>
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="{{ asset('js/arrives.js') }}"> </script>
 
         <!-- Styles -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"> </script> 
     </head>
     <body class="bg-light">
        
@@ -70,30 +75,34 @@
             @endif
        
        
-                <form id="form-arrives" action="/customizeArrives" method="POST" class="text-center text-light p-3 bg-info" style=" border: 2px solid #f2f2f2; border-radius: 6px;">
+                <form id="form-arrives" action="/customizeArrives" method="POST" class="text-center text-light p-3 bg-info" onsubmit="return validateForm()" style=" border: 2px solid #f2f2f2; border-radius: 6px;">
                     @csrf 
                     <div class="h1"> Dodaj przejazd </div>
 
                     <div class="lists row ml-auto mr-auto" style="border-top: 2px solid #f2f2f2;">
-                        <div class="col-md-3 col-xs-6">
-                                <label for="begin-at"> Godzina odjazdu </label><br>
-                                <input type="text" name="begin-at" class="form-control"><br>
+                        <div class="col-md-3 col-xs-6" id="date-1">
+                                <label for="begin-at"> Data odjazdu </label><br>
+                                <input type="text" name="begin-at" id="datepicker1" class="form-control" required>
+                                <label for="begin-at-hour"> Godzina odjazdu </label>
+                                <input type="text" name="begin-at-hour" placeholder="gg:mm" class="form-control" required><br>
                         </div>
-                        <div class="col-md-3 col-xs-6">
-                                <label for="arrive-at"> Godzina przyjazdu </label><br>
-                                <input type="text" name="arrive-at" class="form-control">
+                        <div class="col-md-3 col-xs-6" id="date-2">
+                                <label for="arrive-at"> Data przyjazdu </label><br>
+                                <input type="text" name="arrive-at" id="datepicker2" class="form-control" required>
+                                <label for="arrive-at-hour"> Godzina przyjazdu </label>
+                                <input type="text" name="arrive-at-hour" placeholder="gg:mm" class="form-control" required><br>
                         </div>
                         <div class="col-md-3 col-xs-6 text-center">
                             <label for="train-search"> Wyszukaj pociąg </label><br>
-                            <input type="text" id="train-search" name="train-search" class="form-control"/>
-                            <ul class="list-group text-center text-dark" id="trains">
+                            <input type="text" id="train-search" name="train-search" class="form-control" required/>
+                            <ul class="list-group text-center text-dark" id="trains" >
                                 <li class="list-group-item text-center"> </li>
                             </ul>
                         </div>
 
                         <div class="col-md-3 col-xs-6 text-center">
                             <label for="trace-search"> Wyszukaj trase </label><br>
-                            <input type="text" id="trace-search" name="trace-search" class="form-control"/>
+                            <input type="text" id="trace-search" name="trace-search" class="form-control" required/>
                             <ul class="list-group text-center text-dark" id="traces">
                                 <li class="list-group-item text-center"> </li>
                             </ul>
@@ -141,6 +150,11 @@
 
                setEventToSearcher1(inputTrain, trainsCollapse, trains);
                setEventToSearcher2(inputTrace, tracesCollapse, traces);
+
+               $( function() {
+                    $( "#datepicker1" ).datepicker();
+                    $( "#datepicker2" ).datepicker();
+                } );
 
             </script>
     </body>

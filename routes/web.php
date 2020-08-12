@@ -35,4 +35,3 @@ Route::get('customizeStation', 'StationController@index')->middleware('adminChec
 Route::post('customizeStation', 'StationController@store')->middleware('adminCheck');
 Route::get('destroyStations', 'StationController@destroy')->middleware('adminCheck');
 Route::get('customizeArrives', 'ArrivesController@index')->middleware('adminCheck');
-
