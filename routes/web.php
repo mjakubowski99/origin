@@ -36,4 +36,4 @@ Route::post('customizeStation', 'StationController@store')->middleware('adminChe
 Route::get('destroyStations', 'StationController@destroy')->middleware('adminCheck');
 
 Route::get('customizeArrives', 'ArrivesController@index')->middleware('adminCheck');
-Route::post('customizeArrives', 'ArrivesController@store')->middleware('adminCheck');
+Route::post('customizeArrives', 'ArrivesController@store')->middleware('adminCheck')->name('customizeArrives');

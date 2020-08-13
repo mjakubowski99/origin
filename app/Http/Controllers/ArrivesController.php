@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Train;
 use App\Trace;
+use DateTime;
 
 class ArrivesController extends Controller
 {
@@ -30,10 +31,9 @@ class ArrivesController extends Controller
 
     /** Form validation messages */
     private $messages = [ 'begin-at.date' => 'Podana wartość dla godziny odjazdu nie jest datą',
-            'arrive-at.date' => 'Podana wartość dla godziny przyjazdu nie jest datą',
-            'arrive-at-hour.regex' => 'Godzina nie zgodna z formatem. Uzyj formatu: [0-24]:[0-60]',
-            'begin-at-hour.regex' => 'Godzina nie zgodna z formatem. Uzyj formatu: [0-24]:[0-60]'
-    ];
+                          'arrive-at.date' => 'Podana wartość dla godziny przyjazdu nie jest datą',
+                          'arrive-at-hour.regex' => 'Godzina nie zgodna z formatem. Uzyj formatu: [0-24]:[0-60]',
+                          'begin-at-hour.regex' => 'Godzina nie zgodna z formatem. Uzyj formatu: [0-24]:[0-60]' ];
 
     /**
      * Store a newly created resource in storage.
@@ -52,9 +52,37 @@ class ArrivesController extends Controller
             'trace-search' => 'required',
         ], $this->messages);
 
+        echo $request->input('station');
+
         //Now it's needed to check if train and trace exists in database
 
-        echo 'Request validated';
+        $train = $request->input('train-search');
+        $trace = $request->input('trace-search');
+        $arriveDates = [ $request->input('begin-at'), $request->input('begin-at-hour'), $request->input('arrive-at'), $request->input('arrive-at-hour') ];
+
+
+        //Record if exists
+        $trainDatabase = Train::where('name', $train)->first();
+        $traceDatabase = Trace::where('name', $trace)->first();
+
+        if( $trainDatabase && $traceDatabase )
+            $this->addNewArrive($trainDatabase->id , $traceDatabase->id, $arriveDates);
+        else if( $trainDatabase )
+            return redirect('customizeArrives')->with('error', 'Nie istnieje taka trasa');
+        else if( $traceDatabase )
+            return redirect('customizeArrives')->with('error', 'Nie istnieje taki pociąg');            
+        else
+            return redirect('customizeArrives')->with('error', 'Nie istnieje ani taki pociąg ani taka trasa'); 
+    }
+
+    private function addNewArrive($trainID, $traceID, $arriveDates){
+
+        $beginDate = $arriveDates[0].' '.$arriveDates[1].":00";
+        $arriveDate = $arriveDates[2].' '.$arriveDates[3].":00";
+
+        $beginDateConverted = DateTime::createFromFormat('Y-m-d H:i:s', $beginDate);
+        $arriveDateConverted = DateTime::createFromFormat('Y-m-d H:i:s', $arriveDate);
+
     }
 
     /**

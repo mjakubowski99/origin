@@ -60,7 +60,11 @@
     <div class="col-md-3 col-xs-6 text-center">
         <label for="trace-search"> Wyszukaj trase </label><br>
         <input type="text" id="trace-search" name="trace-search" class="form-control" required/>
+
         <ul class="list-group text-center text-dark" id="traces"> </ul>
+
+        Wybór stacji:
+        <select id="select-station" name="station" class="browser-default custom-select"> </select>
     </div>
 @endsection
 
@@ -116,10 +120,14 @@
                 setEventToSearcher2(inputTrace, tracesCollapse, traces);
 
                 $( function() {
-                        $( "#datepicker1" ).datepicker();
-                        $( "#datepicker2" ).datepicker();
-                } );
-            });
+                    $( "#datepicker1" ).datepicker({
+                        dateFormat: "yy-mm-dd"
+                    });
 
+                    $( "#datepicker2" ).datepicker({
+                        dateFormat: "yy-mm-dd"
+                    });
+                } );
+                });
     </script>
 @endsection

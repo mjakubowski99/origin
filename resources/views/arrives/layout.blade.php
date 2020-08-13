@@ -13,7 +13,6 @@
         <link rel="dns-prefetch" href="//fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-        <link rel="stylesheet" href="/resources/demos/style.css">
 
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}"> </script>
@@ -25,7 +24,6 @@
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     </head>
     <body class="bg-light">
-
 
           <!-- navbar -->
           <nav class="navbar navbar-expand-lg navbar-light bg-info">
@@ -76,5 +74,7 @@
           </form>
 
         @yield('searcherScript')
+        <script type="text/javascript">
+        </script>
     </body>
 </html>
