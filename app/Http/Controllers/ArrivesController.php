@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Train;
 use App\Trace;
+use App\Station;
 use DateTime;
 
 class ArrivesController extends Controller
@@ -30,10 +32,25 @@ class ArrivesController extends Controller
     }
 
     /** Form validation messages */
-    private $messages = [ 'begin-at.date' => 'Podana wartość dla godziny odjazdu nie jest datą',
-                          'arrive-at.date' => 'Podana wartość dla godziny przyjazdu nie jest datą',
-                          'arrive-at-hour.regex' => 'Godzina nie zgodna z formatem. Uzyj formatu: [0-24]:[0-60]',
-                          'begin-at-hour.regex' => 'Godzina nie zgodna z formatem. Uzyj formatu: [0-24]:[0-60]' ];
+    private $messages = [ 'date' => 'Podana wartość nie jest datą',
+                          'regex' => 'Podana wartość nie jest godziną' ];
+
+    private function createValidateTable($input){
+        $validateTable = array();
+        foreach( $input as $key => $value ){
+            if( $this->startsWith($key, 'hour-') ){
+                $validateTable[$key] = ['required', 'regex:/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/'];
+            }
+            else if( $this->startsWith($key, 'date-') ){
+                $validateTable[$key] = 'required|date';
+            }
+        }
+
+        $validateTable['train-search'] = 'required';
+        $validateTable['trace-search'] = 'required';
+
+        return $validateTable;
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -43,46 +60,57 @@ class ArrivesController extends Controller
      */
     public function store(Request $request)
     {
-        $validateData = $request->validate([
-            'begin-at' => 'required|date', 
-            'begin-at-hour' => ['required', 'regex:/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/'],
-            'arrive-at' => 'required|date', 
-            'arrive-at-hour' => ['required', 'regex:/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/'],
-            'train-search' => 'required', 
-            'trace-search' => 'required',
-        ], $this->messages);
+        $input =  $request->input();
+        $validateTable = $this->createValidateTable($input);
 
-        echo $request->input('station');
+        $validateData = $request->validate( $validateTable, $this->messages);
 
         //Now it's needed to check if train and trace exists in database
 
         $train = $request->input('train-search');
         $trace = $request->input('trace-search');
-        $arriveDates = [ $request->input('begin-at'), $request->input('begin-at-hour'), $request->input('arrive-at'), $request->input('arrive-at-hour') ];
 
 
         //Record if exists
         $trainDatabase = Train::where('name', $train)->first();
         $traceDatabase = Trace::where('name', $trace)->first();
 
-        if( $trainDatabase && $traceDatabase )
-            $this->addNewArrive($trainDatabase->id , $traceDatabase->id, $arriveDates);
+        if( $trainDatabase && $traceDatabase ){
+            $this->addNewArrive($trainDatabase->id , $traceDatabase->id, $input);           
+            return redirect('customizeArrives')->with('success', 'Pomyślnie dodano do bazy danych!');
+        }
         else if( $trainDatabase )
             return redirect('customizeArrives')->with('error', 'Nie istnieje taka trasa');
         else if( $traceDatabase )
             return redirect('customizeArrives')->with('error', 'Nie istnieje taki pociąg');            
         else
-            return redirect('customizeArrives')->with('error', 'Nie istnieje ani taki pociąg ani taka trasa'); 
+            return redirect('customizeArrives')->with('error', 'Nie istnieje ani taki pociąg ani taka trasa');
     }
 
     private function addNewArrive($trainID, $traceID, $arriveDates){
+        //$beginDate = $arriveDates[0].' '.$arriveDates[1].":00"; //concatenation date and hours
+       // $arriveDate = $arriveDates[2].' '.$arriveDates[3].":00";
 
-        $beginDate = $arriveDates[0].' '.$arriveDates[1].":00";
-        $arriveDate = $arriveDates[2].' '.$arriveDates[3].":00";
+       $maxIndex = (count($arriveDates)-2)/2;
+       $stations = Trace::find($traceID)->stations;
 
-        $beginDateConverted = DateTime::createFromFormat('Y-m-d H:i:s', $beginDate);
-        $arriveDateConverted = DateTime::createFromFormat('Y-m-d H:i:s', $arriveDate);
+       $stationIterator = 0;
+       for($i=0; $i<$maxIndex-1; $i+=2){
+           $beginDate = $arriveDates[ 'date-'.($i) ].' '.$arriveDates[ 'hour-'.($i) ].":00";
+           $arriveDate = $arriveDates[ 'date-'.($i+1) ].' '.$arriveDates[ 'hour-'.($i+1) ].":00";
 
+           $beginDateConverted = DateTime::createFromFormat('Y-m-d H:i:s', $beginDate);
+           $arriveDateConverted = DateTime::createFromFormat('Y-m-d H:i:s', $arriveDate);
+
+           DB::table('arrives')->insert([
+               'ID_TRAIN' => $trainID,
+               'ID_STATION' => $stations[$stationIterator]->id,
+               'BEGIN_DATE' => $beginDateConverted,
+               'ARRIVE_DATE' => $arriveDateConverted,
+           ]); 
+
+           $stationIterator++;
+       }
     }
 
     /**
@@ -128,5 +156,26 @@ class ArrivesController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function get($trace_name){
+        $trace = DB::table('traces')->where('name', $trace_name)->first();
+
+        $stations = Station::where('ID_TRACE', $trace->id)->get();   
+        //return json_encode($stations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        return response()->json( $stations );
+    }
+
+    private function startsWith ($string, $startString) 
+    { 
+        $len = strlen($startString); 
+        return (substr($string, 0, $len) === $startString); 
+    } 
+
+    public function test(){
+        $stations = Trace::find(1)->stations;
+        foreach( $stations as $station ){
+            echo $station;
+        }
     }
 }

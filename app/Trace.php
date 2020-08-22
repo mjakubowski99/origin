@@ -12,4 +12,8 @@ class Trace extends Model
      * @var string
      */
     protected $table = 'traces';
+
+    public function stations(){
+        return $this->hasMany('App\Station', 'ID_TRACE');
+    }
 }

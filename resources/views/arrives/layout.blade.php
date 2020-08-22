@@ -16,9 +16,9 @@
 
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}"> </script>
-        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-        <script src="{{ asset('js/arrives.js') }}"> </script>
+        <script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha384-KcyRSlC9FQog/lJsT+QA8AUIFBgnwKM7bxm7/YaX+NTr4D00npYawrX0h+oXI3a2" crossorigin="anonymous" ></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha384-JPbtLYL10d/Z1crlc6GGGGM3PavCzzoUJ1UxH0bXHOfguWHQ6XAWrIzW+MBGGXe5" crossorigin="anonymous" ></script>
+        <script type="module" src="{{ asset('js/arrives.js') }}"> </script>
 
         <!-- Styles -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -70,11 +70,12 @@
               </div>
 
               <br>
-              <input id="submiter" type="submit" value="Dodaj przejazd"class="btn btn-light text-dark text-light mb-2">
+              <input id="stations-request-sender" type="button" value="Zaplanuj godziny"class="btn btn-light text-dark text-light mb-2">
+              <div id="stations"> </div>
+
+              <input type="submit" id="form-sender" class="btn btn-primary mt-3" value="Dodaj przejazd" hidden/>
           </form>
 
         @yield('searcherScript')
-        <script type="text/javascript">
-        </script>
     </body>
 </html>

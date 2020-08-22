@@ -37,3 +37,5 @@ Route::get('destroyStations', 'StationController@destroy')->middleware('adminChe
 
 Route::get('customizeArrives', 'ArrivesController@index')->middleware('adminCheck');
 Route::post('customizeArrives', 'ArrivesController@store')->middleware('adminCheck')->name('customizeArrives');
+
+Route::get('getStations/{trace_name}', 'ArrivesController@get');

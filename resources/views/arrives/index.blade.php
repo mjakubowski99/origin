@@ -2,7 +2,9 @@
 
 @section('jumbotronContent')
     <h1 class="display-4">Obsluga</h1>
-    <p class="lead"> Wpisujemy date przyjazdu i odjazdu w . Wyszukujemy interesujący nas pociąg, który ma jechać na interesującej nas trasie</p>
+    <p class="lead"> Wyszukujemy interesujący nas pociąg, który ma jechać na interesującej nas trasie. Klikamy zaplanuj trase.
+        Wyświetla nam się lista stacji. dla każdej stacji wpisujemy godzinę oraz datę przyjazdu i odjazdu.
+    </p>
     <hr class="my-4">
     <p> Kazde pole musi być uzupełnione inaczej formularz nie przejdzie. Zostaniesz poinformowany o tym czy sukcesywnie
     udało ci się dodać przejazd do bazy danych.</p>
@@ -31,25 +33,25 @@
 @endsection
 
 @section('beginArriveFormPart')
-    <div class="col-md-3 col-xs-6" id="date-1">
+    <!-- <div class="col-md-3 col-xs-6" id="date-1">
         <label for="begin-at"> Data odjazdu </label><br>
         <input type="text" name="begin-at" id="datepicker1" class="form-control" required>
         <label for="begin-at-hour"> Godzina odjazdu </label>
         <input type="text" name="begin-at-hour" placeholder="gg:mm" class="form-control" required><br>
-    </div>
+    </div> -->
 @endsection
 
 @section('arriveToPart')
-    <div class="col-md-3 col-xs-6" id="date-2">
+   <!-- <div class="col-md-3 col-xs-6" id="date-2">
         <label for="arrive-at"> Data przyjazdu </label><br>
         <input type="text" name="arrive-at" id="datepicker2" class="form-control" required>
         <label for="arrive-at-hour"> Godzina przyjazdu </label>
         <input type="text" name="arrive-at-hour" placeholder="gg:mm" class="form-control" required><br>
-    </div>
+   </div> -->
 @endsection
 
 @section('trainSearcher')
-    <div class="col-md-3 col-xs-6 text-center">
+    <div class="col-md-6 col-xs-6 text-center">
         <label for="train-search"> Wyszukaj pociąg </label><br>
         <input type="text" id="train-search" name="train-search" class="form-control" required/>
         <ul class="list-group text-center text-dark" id="trains" > </ul>
@@ -57,14 +59,11 @@
 @endsection
 
 @section('traceSearcher')
-    <div class="col-md-3 col-xs-6 text-center">
+    <div class="col-md-6 col-xs-6 text-center">
         <label for="trace-search"> Wyszukaj trase </label><br>
         <input type="text" id="trace-search" name="trace-search" class="form-control" required/>
 
         <ul class="list-group text-center text-dark" id="traces"> </ul>
-
-        Wybór stacji:
-        <select id="select-station" name="station" class="browser-default custom-select"> </select>
     </div>
 @endsection
 
@@ -79,6 +78,15 @@
                 let inputTrace = document.getElementById('trace-search');
                 let trainsCollapse = document.getElementById('trains');
                 let tracesCollapse = document.getElementById('traces');
+
+                trainsCollapse.addEventListener('click', (e) => {
+                    $(trainsCollapse).empty();
+                });
+
+                tracesCollapse.addEventListener('click', (e) => {
+                    $(tracesCollapse).empty();
+                });
+
 
                 function setEventToSearcher1(input, collapse, jsonObj){
                     input.addEventListener( 'keyup', (e) => {
@@ -118,16 +126,6 @@
 
                 setEventToSearcher1(inputTrain, trainsCollapse, trains);
                 setEventToSearcher2(inputTrace, tracesCollapse, traces);
-
-                $( function() {
-                    $( "#datepicker1" ).datepicker({
-                        dateFormat: "yy-mm-dd"
-                    });
-
-                    $( "#datepicker2" ).datepicker({
-                        dateFormat: "yy-mm-dd"
-                    });
-                } );
                 });
     </script>
 @endsection
