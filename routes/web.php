@@ -39,3 +39,6 @@ Route::get('customizeArrives', 'ArrivesController@index')->middleware('adminChec
 Route::post('customizeArrives', 'ArrivesController@store')->middleware('adminCheck')->name('customizeArrives');
 
 Route::get('getStations/{trace_name}', 'ArrivesController@get');
+Route::get('test', 'ArrivesController@create');
+Route::get('buyTicket', 'PlacesController@index')->name('buyTicket');
+Route::post('buyTicket', 'PlacesController@store');

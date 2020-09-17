@@ -1,0 +1,32 @@
+
+.center{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.box{
+    border: 1px solid;
+    border-color: #e6e6e6;
+}
+
+.input-btn{
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.input-btn:focus{
+    border: 1px solid #b3e0ff;
+    background-color: #e6faff;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.input-btn:hover{
+    border: 1px solid #b3e0ff;
+    background-color: #e6faff;
+    border-radius: 4px;
+    box-sizing: border-box;
+}

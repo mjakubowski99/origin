@@ -20,7 +20,10 @@ window.Vue = require('vue');
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 //Vue.component('jumbotron', require('./components/jumbotron.vue').default);
-//Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.component('navbar-component', require('./components/NavbarComponent.vue').default);
+Vue.component('sidebar-component', require('./components/SidebarComponent.vue').default);
+Vue.component('card-component', require('./components/CardComponent.vue').default);
 
 
 /**

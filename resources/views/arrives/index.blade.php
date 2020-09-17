@@ -126,6 +126,8 @@
 
                 setEventToSearcher1(inputTrain, trainsCollapse, trains);
                 setEventToSearcher2(inputTrace, tracesCollapse, traces);
+
+                
                 });
     </script>
 @endsection

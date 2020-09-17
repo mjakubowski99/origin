@@ -1,10 +1,9 @@
-import { checkHour } from "./arrives_validation_modules.js";
+import { checkHour } from "./validation_modules.js";
 import { xmlRequestSend } from "./arrives_xml_modules.js";
 
 //function which run hour checker
 function validateForm(){ 
     const inputsHours = document.getElementsByClassName('hour');
-    console.log(inputsHours);
     let datesValid = true;
     for(let i=0; i<inputsHours.length; i++){
         datesValid = datesValid && checkHour( inputsHours[i].value , inputsHours[i] );

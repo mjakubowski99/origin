@@ -15,12 +15,10 @@ function checkHour(hours, hoursEl){
     if( hoursRegex.exec(hours) == null){
         const el = hoursEl;
         const infoDiv = createInfoDiv();
-        if( el.children.length < 7 ){
-            el.parentElement.appendChild( infoDiv );
-            setTimeout( () => {
-                el.parentElement.removeChild(infoDiv);
-            }, 3000);
-        }
+        el.parentElement.appendChild( infoDiv );
+        setTimeout( () => {
+            el.parentElement.removeChild(infoDiv);
+        }, 3000);
         return false;
     }
     return true;
