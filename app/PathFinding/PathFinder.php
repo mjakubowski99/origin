@@ -11,6 +11,7 @@ class PathFinder{
     private $graph;
     private $visited;
     private $pathsFinded;
+    private $arrivesFromTwoDays;
 
 
     /**
@@ -18,80 +19,19 @@ class PathFinder{
      *
      * @param  DateTime  $dateOfJourney, String $trace_begim, String
      */
-    public function __construct($dateOfJourney, $trace_begin, $trace_end){
+    public function __construct(){
         $this->graph = array();
         $this->visited = array();
         $this->pathsFinded = array();
     }
 
     public function findPath($dateOfJourney, $trace_begin, $trace_end){
-       $exists = $this->checkIfTraceExists($dateOfJourney, $trace_begin, $trace_end);
-
-       if( $exists ){
-           $this->setGraph();
+           $this->arrivesFromTwoDays = $this->getArrivesFrom2DaysAfterBeginJourney($dateOfJourney);
+           $this->setGraph($trace_begin, $dateOfJourney, $this->arrivesFromTwoDays );
            $this->runFindingAllPaths($trace_begin, $trace_end);
            return true;
-       }
-       return false;
     }
 
-    private function checkIfTraceExists($dateOfJourney, $trace_begin, $trace_end){
-        $userStationIDs = $this->getUserStation($trace_begin);
-
-        if( $this->checkIfEndStationExists($trace_end) && count($userStationIDs) != 0){
-            $startStationRecords = $this->getArrivesWithUserStationAndDate(
-                    $dateOfJourney, 
-                    $userStationIDs
-            );
-            if( count($startStationRecords) != 0 )
-                return true;
-        }
-        return false;
-    }
-
-    private function checkIfEndStationExists($trace_end){
-        if( DB::table('stations')->where('NAME', $trace_end)->first() )
-            return true;
-        return false;
-    }
-
-    /**
-     * Function return array of id's records from station table which have passed by parameter trace name
-     *
-     * @param  String & $trace
-     * @return array()
-     */
-    private function getUserStation(&$trace){
-        $stationID = DB::table('stations')
-                    ->select('id')
-                    ->where('NAME', $trace)
-                    ->get();
-
-        $stationIDArray = array();
-
-        foreach( $stationID as $station )
-            array_push($stationIDArray, $station->id);
-                  
-        return $stationIDArray;
-    }
-
-    /**
-     * Function return arrives records which have less than 1 day difference between passed by parameter date and station,
-     * this records help to set start station to graph traversal algorithm
-     *
-     * @param  DateTime & $dateOfJourney, array $stationIDArray
-     * @return array()
-     */
-    private function getArrivesWithUserStationAndDate(&$dateOfJourney, $stationIDArray){
-        $date = $dateOfJourney;
-        \date_modify($dateOfJourney, '+1 day');
-        $stations = DB::table('arrives')
-                    ->where('id_station', $stationIDArray)
-                    ->whereDate('begin_date', '<=', $dateOfJourney)
-                    ->get();
-
-        return $stations;
-    }
 
      /**
      * Initialize graph array. Set 'trace_id' and 'adjavency_list' as array
@@ -101,89 +41,186 @@ class PathFinder{
     private function initializeGraphArray(&$allStations){
         for($i=0; $i<count($allStations); $i++){
             $this->graph[ $allStations[$i]->NAME ] = [
-                'trace_id' => array(),
+                'arrive_id' => array(),
+                'station_id' => array(),
                 'adjavency_list' => array()
             ];
-
-            $this->visited[$allStations[$i]->NAME] = false;
         }
     }
 
     public function getArrivesFrom2DaysAfterBeginJourney($dateOfJourney){
-        $maxDateOfArrives = $dateOfJourney;
+        $maxDateOfArrives = new DateTime( $dateOfJourney->format('Y-m-d H:i:s') );
         \date_modify($maxDateOfArrives, '+2 day');
 
-        $dateOfJourney = $dateOfJourney->format('Y-m-d H:i:s');
-        $maxDateOfArrives = $maxDateOfArrives->format('Y-m-d H:i:s');
-    
-        return DB::table('arrives')->whereDate('begin_date', '<=', $dateOfJourney)->get();
+        return DB::table('arrives')
+            ->select(
+                'ID_STATION', 
+                'arrive_id',
+                'begin_date', 
+                'arrive_date'
+            )->whereRaw(
+                'begin_date >= ? and begin_date <= ?', 
+                [$dateOfJourney, $maxDateOfArrives] 
+            )->get();
     }
-
-    private function setGraph2($starting_point_arrives){
-
-    }
+      
 
     
      /**
      * Running function which initialize graph and set edges.
      *
      */
-    private function setGraph(){
-       $allStations = DB::table('stations')->get();
-       $this->initializeGraphArray($allStations);
+    private function setGraph($startingStationName, $dateOfJourney, $arrivesFromTwoDays){
+            $allStations = DB::table('stations')->get();
+            $this->initializeGraphArray($allStations);
 
-       $arrive_records_to_fit = $starting_point_arrives;
+            $startingStationIDS = $allStations
+                ->where('NAME', $startingStationName)
+                ->pluck('id');
 
-       for($i=0; $i<count($allStations); $i++){
-            $stationName = $allStations[$i]->NAME;
-            $stationTraceId = $allStations[$i]->ID_TRACE;
-            $stationID = $allStations[$i]->ID;
+            $startStationDeparture = $arrivesFromTwoDays
+                ->whereIn(
+                    'ID_STATION', 
+                    $startingStationIDS 
+                );
 
-            array_push( 
-                $this->graph[$stationName]['trace_id'], 
-                $stationTraceId
-            ); 
+            $maxDate = new DateTime( 
+                $dateOfJourney->format('Y-m-d H:i:s') 
+            );
+            \date_modify($maxDate, '+2 hours');
 
-            if( $i+1<count($allStations) ){
-                $adjStationName = $allStations[$i+1]->NAME;
-                $adjStationTraceId = $allStations[$i+1]->ID_TRACE;
-                $adjStationID = $allStations[$i+1]->ID;
+            
+            foreach( $startStationDeparture as $it ){
+                $trainArriveDate = new DateTime(
+                    $it->arrive_date
+                );
 
-                if( $stationTraceId == $adjStationTraceId ){
+                if( $trainArriveDate >= $dateOfJourney && $trainArriveDate <= $maxDate ){
                     array_push( 
-                        $this->graph[ $allStations[$i]->NAME ]['adjavency_list'], 
-                        [ $adjStationName, $adjStationTraceId ]
-                    );
+                        $this->graph[$startingStationName]['arrive_id'], 
+                        $it->arrive_id 
+                    ); 
                 }
             }
-       } 
+
+            for($i=0; $i<count($allStations); $i++){
+                    $stationName = $allStations[$i]->NAME;
+                    $stationTraceId = $allStations[$i]->ID_TRACE;
+                    $stationID = $allStations[$i]->id;
+
+                    array_push( 
+                        $this->graph[$stationName]['station_id'], 
+                        $stationID
+                    ); 
+
+                    $this->visited[$stationID] = false;
+
+                    if( $i+1<count($allStations) ){
+                        $adjStationName = $allStations[$i+1]->NAME;
+                        $adjStationTraceId = $allStations[$i+1]->ID_TRACE;
+                        $adjStationID = $allStations[$i+1]->id;
+
+                        if( $stationTraceId == $adjStationTraceId ){                      
+                            array_push( 
+                                $this->graph[ $allStations[$i]->NAME ]['adjavency_list'], 
+                                $adjStationName
+                            );
+                        }
+                    }
+            } 
     }
 
     public function runFindingAllPaths($source, $dest){
         $path_index = 0;
         $paths = array();
-        $this->findingAllPaths($source, $dest, $path_index, $paths);
-        dd( $this->pathsFinded );
+        $this->findingAllPaths(
+            $source, $dest, $path_index,
+            $paths, $this->graph[$source]['station_id'][0], 
+            $this->graph[$source]['arrive_id'][0] 
+        );
     }
 
-    private function findingAllPaths($actual, $dest, $path_index, $paths){
-        $this->visited[$actual] = true;
-        $paths[$path_index] = $actual;
+    private function findingAllPaths($actual, $dest, $path_index, $paths, $station_id, $arrive_id){
+        $this->visited[$station_id] = true;
+        $paths[$path_index] = [$actual, $arrive_id];
         $path_index++;
 
         if( $actual == $dest ){
            array_push( $this->pathsFinded, $paths);
         }
         else{
-            foreach($this->graph[$actual]['adjavency_list'] as $adj ){
-                if( !$this->visited[ $adj[0] ] ){
-                    $this->findingAllPaths( $adj[0], $dest, $path_index, $paths);
+            foreach( $this->graph[$actual]['adjavency_list'] as $adj ){
+                foreach( $this->graph[$adj]['station_id'] as $station_id ){
+                    if( !$this->visited[ $station_id ] ){
+
+                        $neighbour_arrives = $this->arrivesFromTwoDays
+                            ->where(
+                                'ID_STATION', 
+                                $station_id 
+                            );
+
+                        $neighbours_with_same_arrive_id = $neighbour_arrives
+                            ->whereIn(
+                                'arrive_id', 
+                                $this->graph[$actual]['arrive_id'] 
+                            );
+
+                        $neighbours_with_different_arrive_id = $neighbour_arrives
+                            ->whereNotIn(
+                                'arrive_id', 
+                                $this->graph[$actual]['arrive_id']
+                             );
+
+    
+                        foreach( $this->graph[$actual]['arrive_id'] as $actual_arrive_id ){
+                            foreach( $neighbours_with_same_arrive_id as $arrive ){
+                                if( $arrive->arrive_id ==  $actual_arrive_id ){
+                                    array_push(
+                                         $this->graph[ $adj ]['arrive_id'], 
+                                         $arrive->arrive_id
+                                    );
+                                    $this->findingAllPaths( 
+                                        $adj, $dest, 
+                                        $path_index, $paths, 
+                                        $station_id, $arrive->arrive_id 
+                                    );
+                                }
+                            }
+    
+                            foreach($neighbours_with_different_arrive_id as $n_with_diff_id ){
+    
+                                foreach($neighbours_with_same_arrive_id as $n_with_same_id ){
+                                    $date = $n_with_same_id->begin_date;
+                                    $oneHourPlusDate = new DateTime( $date );
+                                    \date_modify($oneHourPlusDate, '+1 hour');
+    
+                                    $change = $n_with_diff_id
+                                        ->whereBetween(
+                                            'arrive_date', $date,
+                                             $oneHourPlusDate
+                                        )
+                                        ->pluck('arrive_id');
+
+                                    foreach($change as $ch){
+                                        array_push(
+                                            $this->graph[ $adj ]['arrive_id'], 
+                                            $ch
+                                        );
+                                        $this->findingAllPaths( $adj, $dest, $path_index,
+                                         $paths, $station_id, $ch );
+                                    }
+                                }
+            
+                            }
+                        }      
+                    }
                 }
+               
             }
         }
 
         $path_index--;
-        $this->visited[$actual] = false;
+        $this->visited[$station_id] = false;
     }
 
 }

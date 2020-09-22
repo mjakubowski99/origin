@@ -33,8 +33,10 @@ class ArrivesController extends Controller
     }
 
     /** Form validation messages */
-    private $messages = [ 'date' => 'Podana wartość nie jest datą',
-                          'regex' => 'Podana wartość nie jest godziną' ];
+    private $messages = [ 
+        'date' => 'Podana wartość nie jest datą',
+        'regex' => 'Podana wartość nie jest godziną' 
+    ];
 
 
      /**
@@ -116,6 +118,10 @@ class ArrivesController extends Controller
 
        $stationIterator = 0; //variable to iterate after station records
 
+       $max_id = DB::table('arrives')->max('arrive_id');
+       if( $max_id == null )
+            $max_id = 0;
+
        for($i=0; $i<$maxIndex; $i+=2){ //in loop we doing +=2 because in one iteration we use $i and $i+1 value
             $beginDate = $arriveDates[ 'date-'.($i) ].' '.$arriveDates[ 'hour-'.($i) ].":00"; //concatenating date and hour to one variable
             $arriveDate = $arriveDates[ 'date-'.($i+1) ].' '.$arriveDates[ 'hour-'.($i+1) ].":00";
@@ -123,8 +129,10 @@ class ArrivesController extends Controller
             $beginDateConverted = DateTime::createFromFormat('Y-m-d H:i:s', $beginDate);
             $arriveDateConverted = DateTime::createFromFormat('Y-m-d H:i:s', $arriveDate);
 
+
             DB::table('arrives')->insert([                             //storing validated data
                 'ID_TRAIN' => $trainID,
+                'arrive_id' => $max_id+1,
                 'ID_STATION' => $stations[$stationIterator]->id,
                 'BEGIN_DATE' => $beginDateConverted,
                 'ARRIVE_DATE' => $arriveDateConverted,

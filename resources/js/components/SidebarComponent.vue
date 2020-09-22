@@ -2,11 +2,14 @@
 
 <template>
     <div id="sidebar">
+
         <button id="close-button" class="btn btn-dark"> Close </button>
         <img v-bind:src="this.photoLink" id="profileImg" />
+
         <div class="sidebar-links">
                 <h1>  {{ this.userName }} </h1>
                 <div style="color: gray"> {{ this.userEmail }} </div>
+
                 <div class="h5 list-group mt-5 pt-5 pb-5" id="sidebar-list">
                     <div id="sidebar-icons">
                         <div class="mb-3"> <mail-component/> </div> 
@@ -30,6 +33,7 @@
                     TrainService@2020
                 </div> 
         </div>
+        
     </div>
 </template>
 

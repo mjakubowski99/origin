@@ -47,9 +47,10 @@ class PlacesController extends Controller
         $dateOfJourney = $this->convertDate($request);
         $trace_begin = $request->input('trace-input-1');
         $trace_end = $request->input('trace-input-2');
-        $pathFinder = new PathFinder($dateOfJourney, $trace_begin, $trace_end);
+        $pathFinder = new PathFinder();
 
-         dd( $pathFinder->getArrivesFrom2DaysAfterBeginJourney($dateOfJourney) );
+        $pathFinder->findPath($dateOfJourney, $trace_begin, $trace_end);
+         //dd( $pathFinder->setGraph2( $pathFinder->getArrivesFrom2DaysAfterBeginJourney($dateOfJourney) ) );
 
        // if( $pathFinder->findPath($dateOfJourney, $trace_begin, $trace_end) )
         //    echo 1;

@@ -15,6 +15,7 @@ class CreateArrives extends Migration
     {
         Schema::create('arrives', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('arrive_id');
             $table->bigInteger('ID_TRAIN');
             $table->bigInteger('ID_STATION');
             $table->date('BEGIN_DATE');
