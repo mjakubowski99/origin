@@ -50,20 +50,18 @@ class PlacesController extends Controller
         $pathFinder = new PathFinder();
 
         $founded_arrives = $pathFinder->findPath($dateOfJourney, $trace_begin, $trace_end);
+        dd( $founded_arrives );
 
         $date_begin = collect();
         $date_end = collect();
         $trains = collect();
 
-        foreach($founded_arrives as $founded_arrive ){
-            $trains = DB::table('arrives')->where('id', $founded_arrive->first()->id)->pluck('train_id');
-        }
 
-        return view('chooseTrace.index', [
+     /*   return view('chooseTrace.index', [
             'founded_arrives' => $founded_arrives, 
             'trace_begin' => $trace_begin, 
             'trace_end' => $trace_end
-         ]);
+         ]); */
     }
     /**
      * Display the specified resource.
@@ -128,4 +126,5 @@ class PlacesController extends Controller
         $dateOfJourney = $request->input('date-input').' '.$request->input('hour-input').":00";
         return DateTime::createFromFormat('Y-m-d H:i:s', $dateOfJourney);
     }
+
 }

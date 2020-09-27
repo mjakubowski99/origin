@@ -30,33 +30,51 @@ class PathFinder{
         $this->founded_arrives = collect();
     }
 
+    public function getStationNameForStationID($station_id){
+        return DB::table('stations')
+                    ->select('name')
+                    ->where('id', $station_id)
+                    ->pluck('name')
+                    ->first();
+    }
+
     public function formatFoundedArrives(){
-        foreach( $this->founded_arrives as $founded_arrive ){
-            foreach( $founded_arrive as $station ){
-                $station->ID_STATION = DB::table('stations')->select('name')->where('id', $station->ID_STATION)->pluck('name')->first();
-            }
-        }
+        foreach( $this->founded_arrives as $founded_arrive )
+            foreach( $founded_arrive as $station )
+                $station->ID_STATION = $this->getStationNameForStationID($station->ID_STATION);
     }
 
     public function findPath($dateOfJourney, $trace_begin, $trace_end){
           $this->dateOfJourney = $dateOfJourney;
           $this->startStation = DB::table('stations')->where('name', $trace_begin)->get()->pluck('id')->toArray();
+          if( count($this->startStation) == 0 )
+            return [];
+            
           $this->arrivesFromTwoDays = $this->getArrivesFrom2DaysAfterBeginJourney($dateOfJourney);
           $this->setGraph($trace_begin, $dateOfJourney, $trace_end);
           $this->runFindingAllPaths($trace_begin, $trace_end);
           $this->checkPathsWithArriveTable();
           $this->formatFoundedArrives();
-    
           return $this->founded_arrives;
     }
 
     private function checkPathsWithArriveTable(){
-        foreach( $this->pathsFinded as $path ){
+        foreach( $this->pathsFinded as $path )
             $this->checkPathWithArriveTable($path);
-        }
     }
+
     private function checkPathWithArriveTable($path){
-        $arrives = $this->findArrivesToUserData();
+        $start_arrives = $this->findArrivesToUserData();
+
+        $arrives = collect();
+        foreach($start_arrives as $arrive){
+            $next = DB::table('arrives')->where('id', $arrive->id+1)->get()->pluck('arrive_id')->first();
+            if( $arrive->arrive_id == $next )
+                $arrives->push($arrive);
+        }
+
+
+
        
         foreach( $arrives as $arrive ){
             $first_flag = true;
@@ -73,12 +91,7 @@ class PathFinder{
                     $first_flag = false;
                 } 
                 else{  
-                    $bestArrives = $this->getBestArrive($previous, $path_el, $previous_station_name, count($founded_arrive)-1);
-                    if( count($founded_arrive) == 1 && count($bestArrives) == 2 ){
-                        $stationName = DB::table('stations')->select('name')->where('id', [$bestArrives[0]->ID_STATION, $founded_arrive[0]->ID_STATION ])->groupBy('name')->get();
-                        if( $stationName->first() == $stationName->last() )
-                            $bestArrives = [null];
-                    }
+                    $bestArrives = $this->getBestArrive($previous, $path_el, $previous_station_name);
                     foreach( $bestArrives as $bestArrive){
                             array_push( 
                                 $founded_arrive,
@@ -106,7 +119,7 @@ class PathFinder{
                 ->pluck('id');
     }
 
-    private function getBestArrive($previous, $station_name, $previous_name, $index){
+    private function getBestArrive($previous, $station_name, $previous_name){
         $bestArrive = $this->arrivesFromTwoDays
             ->where('id', $previous->id+1)
             ->where('arrive_id', $previous->arrive_id );
@@ -137,29 +150,26 @@ class PathFinder{
         $previous_date = new DateTime( $previous->begin_date );
 
         if( $bestArrive->isEmpty() ){ //we looking for best change 
-
             $stationIDS = $this->getStationIdsForStationName($previous_name);
 
             $change = $this->arrivesFromTwoDays
                         ->whereNotIn('arrive_id', [$previous->arrive_id])
                         ->whereIn('ID_STATION', $stationIDS)
                         ->whereBetween('arrive_date', $previous_date, $previous_max_date);
-                        
-            $change_station = $change;
-            $change = $change->pluck('arrive_id');
 
-            $change = $change->map( function($el){
-                return $el+1;
-            });
+            $curr_station_id = $this->getStationIdsForStationName($station_name);
+            $change = $change->whereIn('ID_STATION', $curr_station_id->map( function($el){
+                return $el-1;
+            }) );
 
-            $stationPathIDs = $this->getStationIdsForStationName( $station_name );
-    
-            $arrivesToChange = $this->arrivesFromTwoDays
-                    ->whereIn('id', $change)
-                    ->whereIn('ID_STATION', $stationPathIDs);
+            if( $change->isEmpty() ){
+                return [null];
+            }
                     
-            $data = $arrivesToChange->where('arrive_date', $arrivesToChange->min('arrive_date') );
-            return [$change_station->first(), $data->first()];
+            $data = $change->where('arrive_date', $change->min('arrive_date') )->first();
+            $curr_station = $this->arrivesFromTwoDays->where('arrive_id', $data->arrive_id)->whereIn('ID_STATION', $curr_station_id)->first();
+
+            return [$data, $curr_station];
         }
     }
 

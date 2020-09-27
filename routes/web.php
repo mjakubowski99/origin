@@ -41,3 +41,4 @@ Route::post('customizeArrives', 'ArrivesController@store')->middleware('adminChe
 Route::get('getStations/{trace_name}', 'ArrivesController@get');
 Route::get('buyTicket', 'PlacesController@index')->name('buyTicket');
 Route::post('buyTicket', 'PlacesController@store');
+Route::get('test', 'PlacesController@forDate_18september2020_hour_1150_GiveGoodResponse');
