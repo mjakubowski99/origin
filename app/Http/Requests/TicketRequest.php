@@ -24,10 +24,10 @@ class TicketRequest extends FormRequest
     public function rules()
     {
         return [
-           /* 'trace-input-1' => 'required',
+            'trace-input-1' => 'required',
             'trace-input-2' => 'required',
             'date-input' => [ 'required', 'date'],
-            'hour-input' => [ 'required', 'regex:/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/'] */
+            'hour-input' => [ 'required', 'regex:/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/']
         ]; 
     }
 

@@ -49,11 +49,21 @@ class PlacesController extends Controller
         $trace_end = $request->input('trace-input-2');
         $pathFinder = new PathFinder();
 
-        $pathFinder->findPath($dateOfJourney, $trace_begin, $trace_end);
-         //dd( $pathFinder->setGraph2( $pathFinder->getArrivesFrom2DaysAfterBeginJourney($dateOfJourney) ) );
+        $founded_arrives = $pathFinder->findPath($dateOfJourney, $trace_begin, $trace_end);
 
-       // if( $pathFinder->findPath($dateOfJourney, $trace_begin, $trace_end) )
-        //    echo 1;
+        $date_begin = collect();
+        $date_end = collect();
+        $trains = collect();
+
+        foreach($founded_arrives as $founded_arrive ){
+            $trains = DB::table('arrives')->where('id', $founded_arrive->first()->id)->pluck('train_id');
+        }
+
+        return view('chooseTrace.index', [
+            'founded_arrives' => $founded_arrives, 
+            'trace_begin' => $trace_begin, 
+            'trace_end' => $trace_end
+         ]);
     }
     /**
      * Display the specified resource.

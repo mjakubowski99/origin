@@ -27,8 +27,15 @@ class PathFinder{
         $this->graph = array();
         $this->visited = array();
         $this->pathsFinded = array();
-        $this->allPathsWithDates = array();
         $this->founded_arrives = collect();
+    }
+
+    public function formatFoundedArrives(){
+        foreach( $this->founded_arrives as $founded_arrive ){
+            foreach( $founded_arrive as $station ){
+                $station->ID_STATION = DB::table('stations')->select('name')->where('id', $station->ID_STATION)->pluck('name')->first();
+            }
+        }
     }
 
     public function findPath($dateOfJourney, $trace_begin, $trace_end){
@@ -38,16 +45,15 @@ class PathFinder{
           $this->setGraph($trace_begin, $dateOfJourney, $trace_end);
           $this->runFindingAllPaths($trace_begin, $trace_end);
           $this->checkPathsWithArriveTable();
-
-          
+          $this->formatFoundedArrives();
+    
+          return $this->founded_arrives;
     }
 
     private function checkPathsWithArriveTable(){
         foreach( $this->pathsFinded as $path ){
             $this->checkPathWithArriveTable($path);
         }
-
-        dd( $this->founded_arrives );
     }
     private function checkPathWithArriveTable($path){
         $arrives = $this->findArrivesToUserData();
