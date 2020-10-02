@@ -1,6 +1,7 @@
 <?php 
 
 namespace App\PathFinding;
+use Illuminate\Support\Facades\DB;
 
 class ArrivesGraph{
     private $graph;
@@ -12,7 +13,8 @@ class ArrivesGraph{
     }
 
     
-    private function initializeGraphArray(&$allStations){
+    private function initializeGraphArray( &$allStations ){
+
         for($i=0; $i<count($allStations); $i++){
             $this->graph[ $allStations[$i]->NAME ] = [
                 'station_trace_id' => array(),
@@ -20,14 +22,25 @@ class ArrivesGraph{
             ];
             $this->visited[ $allStations[$i]->NAME ] = false;
         }
+
     }
 
-    public function setGraph($dateOfJourney, $trace_begin, $trace_end){
+    public function getVisitedTable(){
+        return $this->visited;
+    }
+
+    public function getArrivesGraph(){
+        return $this->graph;
+    }
+
+    public function setArrivesGraph($dateOfJourney, $trace_begin, $trace_end){
+
         $allStations = DB::table('stations')->get();
         $this->initializeGraphArray($allStations);
 
-        for($i=0; $i<count($allStations); $i++){
-            $stationID = $allStations[$i]->id;
+        for($i=0; $i<count($allStations); $i++){   
+
+            $stationID = $allStations[$i]->id; //station parameters
             $stationName = $allStations[$i]->NAME;
             $stationTraceId = $allStations[$i]->ID_TRACE;
 
@@ -36,8 +49,9 @@ class ArrivesGraph{
                 [$stationID, $stationTraceId]
             ); 
 
-            if( $i+1<count($allStations) ){
-                $adjStationName = $allStations[$i+1]->NAME;
+            if( $i+1<count($allStations) ){ //check if not last station in database
+
+                $adjStationName = $allStations[$i+1]->NAME; //neighbour station parameters
                 $adjStationTraceId = $allStations[$i+1]->ID_TRACE;
                 $adjStationID = $allStations[$i+1]->id;
 
@@ -48,6 +62,7 @@ class ArrivesGraph{
                     );
                 }
             }
+            
         } 
     }
 

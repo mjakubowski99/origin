@@ -50,18 +50,17 @@ class PlacesController extends Controller
         $pathFinder = new PathFinder();
 
         $founded_arrives = $pathFinder->findPath($dateOfJourney, $trace_begin, $trace_end);
-        dd( $founded_arrives );
 
         $date_begin = collect();
         $date_end = collect();
         $trains = collect();
 
 
-     /*   return view('chooseTrace.index', [
+       return view('chooseTrace.index', [
             'founded_arrives' => $founded_arrives, 
             'trace_begin' => $trace_begin, 
             'trace_end' => $trace_end
-         ]); */
+         ]); 
     }
     /**
      * Display the specified resource.
