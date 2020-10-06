@@ -9,7 +9,7 @@ use App\Station;
 use App\PathFinding\PathFinder;
 use DateTime;
 
-class PlacesController extends Controller
+class TraceFindController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -50,11 +50,9 @@ class PlacesController extends Controller
         $pathFinder = new PathFinder();
 
         $founded_arrives = $pathFinder->findPath($dateOfJourney, $trace_begin, $trace_end);
-
         $date_begin = collect();
         $date_end = collect();
         $trains = collect();
-
 
        return view('chooseTrace.index', [
             'founded_arrives' => $founded_arrives, 

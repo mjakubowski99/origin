@@ -29,16 +29,18 @@ Route::get('customize', function(){
 
 Route::get('customizeTrain', 'CustomizeController@index')->middleware('adminCheck')->name('customizeTrain');
 Route::post('customizeTrain', 'CustomizeController@store')->middleware('adminCheck');
+
 Route::post('customizePlaces', 'CustomizePlaces@store')->middleware('adminCheck')->name('customizePlaces');
-Route::get('destroy', 'CustomizePlaces@destroy')->middleware('adminCheck');
+
 Route::get('customizeStation', 'StationController@index')->middleware('adminCheck');
 Route::post('customizeStation', 'StationController@store')->middleware('adminCheck');
-Route::get('destroyStations', 'StationController@destroy')->middleware('adminCheck');
 
 Route::get('customizeArrives', 'ArrivesController@index')->middleware('adminCheck');
 Route::post('customizeArrives', 'ArrivesController@store')->middleware('adminCheck')->name('customizeArrives');
 
 Route::get('getStations/{trace_name}', 'ArrivesController@get');
-Route::get('buyTicket', 'PlacesController@index')->name('buyTicket');
-Route::post('buyTicket', 'PlacesController@store');
-Route::get('test', 'PlacesController@forDate_18september2020_hour_1150_GiveGoodResponse');
+Route::get('buyTicket', 'TraceFindController@index')->name('buyTicket');
+
+Route::post('buyTicket', 'TraceFindController@store');
+
+Route::post('choosePlace', 'ChoosePlacesController@store')->name('choosePlace');
