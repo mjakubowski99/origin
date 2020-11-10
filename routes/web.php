@@ -43,4 +43,4 @@ Route::get('buyTicket', 'TraceFindController@index')->name('buyTicket');
 
 Route::post('buyTicket', 'TraceFindController@store');
 
-Route::post('choosePlace', 'ChoosePlacesController@store')->name('choosePlace');
+Route::get('choosePlace', 'ChoosePlacesController@store')->name('choosePlace');

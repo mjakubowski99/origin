@@ -24,6 +24,7 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 Vue.component('navbar-component', require('./components/NavbarComponent.vue').default);
 Vue.component('sidebar-component', require('./components/SidebarComponent.vue').default);
 Vue.component('card-component', require('./components/CardComponent.vue').default);
+Vue.component('place-choose-component', require('./components/ChoosePlaceComponent.vue').default );
 
 
 /**

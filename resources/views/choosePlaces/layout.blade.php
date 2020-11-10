@@ -24,7 +24,7 @@
             <navbar-component main-href="{{url('/')}}" home-href="{{url('home')}}" class="bg-success"> </navbar-component>
             
             <div class="card col-sm-12 mt-1 col-md text-center bg-dark">
-                
+                <place-choose-component places="{{$places}}"> </place-choose-component>
             </div>
             
         </div>

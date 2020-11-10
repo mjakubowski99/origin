@@ -37,8 +37,18 @@ class ChoosePlacesController extends Controller
     {
         $arrive_data = json_decode( $request->input('arrive_data') );
         $arrive_data = collect( $arrive_data );
-        $arrive_ids  = $arrive_data->pluck('arrive_id')->groupBy('arrive_id');
+        $arrive_ids  = $arrive_data->pluck('arrive_id')->groupBy('arrive_id')->first()->unique();
 
+        $train = DB::table('trains')
+                    ->select(['id', 'name'])
+                    ->whereIn('id', $arrive_ids)->get();
+
+        $places = DB::table('train_places')->select(['TRAIN_ID','PLACE_ID'])->whereIn('TRAIN_ID', $train->pluck('id') )->get();
+
+        return view('choosePlaces.index', [ 
+            'arrive_ids' => $arrive_ids,
+            'places' => \json_encode($places)
+        ]);
     }
 
     /**
