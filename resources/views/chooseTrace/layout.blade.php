@@ -37,8 +37,6 @@
                             <form action="{{route('choosePlace')}}" method="GET">
                                 @csrf
                                 <input type="hidden" name="arrive_data" value="{{ json_encode($founded_arrive) }}" />
-                                <label for="howManyPlaces"> Wpisz ilosc miejsc </label>
-                                <input name="howManyPlaces" class="form-control" style="width: 50%; margin-left: auto; margin-right: auto;"/>
                                 <button type="submit" class="btn btn-success"> Wybierz miejsce </button>
                             </form>
                         </div>

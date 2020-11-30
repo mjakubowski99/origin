@@ -30,3 +30,8 @@
     border-radius: 4px;
     box-sizing: border-box;
 }
+
+.place{
+    border: 1px solid black;
+    width: 20%;
+}

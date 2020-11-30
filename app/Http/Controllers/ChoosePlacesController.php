@@ -43,7 +43,11 @@ class ChoosePlacesController extends Controller
                     ->select(['id', 'name'])
                     ->whereIn('id', $arrive_ids)->get();
 
-        $places = DB::table('train_places')->select(['TRAIN_ID','PLACE_ID'])->whereIn('TRAIN_ID', $train->pluck('id') )->get();
+        $places = DB::table('train_places')
+                    ->join('places', 'places.id', '=', 'train_places.PLACE_ID')
+                    ->select(['train_places.id','train_places.TRAIN_ID','places.number', 'places.car'])
+                    ->whereIn('train_places.TRAIN_ID', $train->pluck('id') )
+                    ->get(); 
 
         return view('choosePlaces.index', [ 
             'arrive_ids' => $arrive_ids,
