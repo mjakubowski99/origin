@@ -40,7 +40,7 @@
                               </card-component>
 
                               <card-component photo-link="{{asset('storage/train-card-2.jpg')}}" card-text="Kup bilet i jedź gdzie tylko chcesz!" 
-                                            button-text="Kup bilet" href-link="{{route('buyTicket')}}" > 
+                                            button-text="Kup bilet" href-link="{{route('buyTicket/traceFind')}}" > 
                               </card-component>
 
                               <card-component photo-link="{{asset('storage/train-card-3.jpg')}}" card-text="Odwiedź nas na facebooku!" 

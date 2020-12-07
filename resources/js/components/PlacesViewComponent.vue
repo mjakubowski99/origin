@@ -4,6 +4,7 @@
         
        <form method="POST" @submit="checkIfSameCountOfPlacesWasChoosen" :action="this.$props.payForTicketRoute" class="mb-2 flex-row text-center mb-5">
             <input type="hidden" name="_token" v-bind:value="this.$props.csrf">
+            <input type="hidden" name="clicked" v-bind:value="JSON.stringify(this.clicked)">
             <button type="submit" class="btn btn-sm btn-success"> Zatwierdz wybor </button>
         </form> 
     </div>

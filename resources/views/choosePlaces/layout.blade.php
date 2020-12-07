@@ -24,7 +24,7 @@
             <navbar-component main-href="{{url('/')}}" home-href="{{url('home')}}" class="bg-success"> </navbar-component>
             
             <div class="bg-dark">
-                <place-choose-component csrf="{{ csrf_token() }}" places="{{$places}}" pay-for-ticket-route="{{route('payForTicket')}}"> </place-choose-component>
+                <place-choose-component csrf="{{ csrf_token() }}" places="{{$places}}" pay-for-ticket-route="{{route('reasume')}}"> </place-choose-component>
             </div>
             
         </div>

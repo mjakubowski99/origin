@@ -23,27 +23,65 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('profile', 'ProfileController@index')->name('profile');
 
-Route::get('customize', function(){
-    return view('customize.index');
-})->middleware(['adminCheck'])->name('customize');
+Route::middleware(['adminCheck'])->group( function() {
 
-Route::get('customizeTrain', 'CustomizeController@index')->middleware('adminCheck')->name('customizeTrain');
-Route::post('customizeTrain', 'CustomizeController@store')->middleware('adminCheck');
+    Route::get('customize', function(){
+        return view('customize.index');
+    })->name('customize');
 
-Route::post('customizePlaces', 'CustomizePlaces@store')->middleware('adminCheck')->name('customizePlaces');
+    Route::get('customize/train', 'CustomizeController@index')
+        ->name('customizeTrain');
 
-Route::get('customizeStation', 'StationController@index')->middleware('adminCheck');
-Route::post('customizeStation', 'StationController@store')->middleware('adminCheck');
+    Route::post('customize/train', 'CustomizeController@store')
+        ->name('customizeTrainStore');
 
-Route::get('customizeArrives', 'ArrivesController@index')->middleware('adminCheck');
-Route::post('customizeArrives', 'ArrivesController@store')->middleware('adminCheck')->name('customizeArrives');
+    Route::post('customize/places', 'CustomizePlaces@store')
+        ->name('customizePlaces');
+
+    Route::get('customize/station', 'StationController@index')
+        ->name('customizeStation');
+
+    Route::post('customize/station', 'StationController@store')
+        ->name('customizeStationStore');
+
+    Route::get('customize/arrives', 'ArrivesController@index')
+        ->name('customizeArrives');
+
+    Route::post('customize/arrives', 'ArrivesController@store')
+        ->name('customizeArrivesStore');
+});
+
+Route::middleware(['auth'])->group( function() {
+
+    Route::get('buyTicket/traceFind', 'TraceFindController@index')
+        ->name('buyTicket');
+
+    Route::post('buyTicket/traceFind', 'TraceFindController@store')
+        ->name('buyTicketStore');
+
+    Route::get('buyTicket/choosePlace', 'ChoosePlacesController@store')
+        ->name('choosePlace');
+
+    Route::post('buyTicket/reasume', 'ReasumeController@index')
+        ->name('reasume');
+
+});
+
 
 Route::get('getStations/{trace_name}', 'ArrivesController@get');
-Route::get('buyTicket', 'TraceFindController@index')->name('buyTicket');
 
-Route::post('buyTicket', 'TraceFindController@store');
 
-Route::get('choosePlace', 'ChoosePlacesController@store')->name('choosePlace');
+
+
+
+
+
+
+
+
+
+
+
 
 Route::post('payForTicket', function(){
     $ch = curl_init();

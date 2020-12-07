@@ -2155,6 +2155,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['splitedPlacesArray', 'placesArray', 'payForTicketRoute', 'csrf'],
@@ -38973,6 +38974,11 @@ var render = function() {
           _c("input", {
             attrs: { type: "hidden", name: "_token" },
             domProps: { value: this.$props.csrf }
+          }),
+          _vm._v(" "),
+          _c("input", {
+            attrs: { type: "hidden", name: "clicked" },
+            domProps: { value: JSON.stringify(this.clicked) }
           }),
           _vm._v(" "),
           _c(
