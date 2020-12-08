@@ -20,16 +20,6 @@ class CustomizeController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -43,53 +33,14 @@ class CustomizeController extends Controller
        ]);     
 
        if( Train::where('name', $trainName)->first() )
-            return redirect('/customizeTrain')->with('success', "Pomyslnie dodano do bazy danych!");
+            return redirect('/customizeTrain')->with(
+                'success', 
+                "Pomyslnie dodano do bazy danych!"
+            );
        else
-            return redirect('/customizeTrain')->with('error', "Blad dodania do bazy danych!");
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+            return redirect('/customizeTrain')->with(
+                'error', 
+                "Blad dodania do bazy danych!"
+            );
     }
 }

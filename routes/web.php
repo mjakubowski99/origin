@@ -59,7 +59,7 @@ Route::middleware(['auth'])->group( function() {
     Route::post('buyTicket/traceFind', 'TraceFindController@store')
         ->name('buyTicketStore');
 
-    Route::get('buyTicket/choosePlace', 'ChoosePlacesController@store')
+    Route::post('buyTicket/choosePlace', 'ChoosePlacesController@store')
         ->name('choosePlace');
 
     Route::post('buyTicket/reasume', 'ReasumeController@index')

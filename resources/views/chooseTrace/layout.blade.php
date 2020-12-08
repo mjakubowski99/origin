@@ -34,7 +34,7 @@
                             <p class="card-text h1"> 11:20 <button class="btn btn-primary"> >> </button> 15:30</p>
                             <a class="btn btn-success" data-toggle="modal" data-target="#exampleModal" >Zobacz trasę</a>
                             <br/>
-                            <form action="{{route('choosePlace')}}" method="GET">
+                            <form action="{{route('choosePlace')}}" method="POST">
                                 @csrf
                                 <input type="hidden" name="arrive_data" value="{{ json_encode($founded_arrive) }}" />
                                 <button type="submit" class="btn btn-success"> Wybierz miejsce </button>
