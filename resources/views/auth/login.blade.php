@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8" style="border-radius: 25%;">
             <div class="card bg-light">
-                <div class="card-header h1 text-light text-center" style="background: linear-gradient(rgba(0, 0, 0, .6), rgba(0, 0, 0, .6)), url('{{asset('storage/train-bg.jpg')}}') no-repeat center center fixed;"> Zaloguj się </div>
+                <div class="card-header h1 text-dark text-center"> Zaloguj się </div>
 
                 <div class="card-body mt-5">
                     <form method="POST" action="{{ route('login') }}">

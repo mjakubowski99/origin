@@ -5,6 +5,7 @@
                     :splitedPlacesArray="this.splitedPlacesArray" 
                     :placesArray="this.$props.places" 
                     :pay-for-ticket-route="this.$props.payForTicketRoute"
+                    :arrive-ids="this.$props.arriveIds"
             />
         </div>
     </div>
@@ -13,7 +14,7 @@
 <script>
     import places from './PlacesViewComponent.vue'
     export default {
-        props: ['places', 'payForTicketRoute', 'csrf'],
+        props: ['places', 'payForTicketRoute', 'csrf', 'arriveIds'],
         data() {
            return{
                 splitedPlacesArray: this.splitPlaceFromDifferentCar( 

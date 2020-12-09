@@ -53,9 +53,6 @@ Route::middleware(['adminCheck'])->group( function() {
 
 Route::middleware(['auth'])->group( function() {
 
-    Route::get('buyTicket/traceFind', 'TraceFindController@index')
-        ->name('buyTicket');
-
     Route::post('buyTicket/traceFind', 'TraceFindController@store')
         ->name('buyTicketStore');
 
@@ -65,7 +62,13 @@ Route::middleware(['auth'])->group( function() {
     Route::post('buyTicket/reasume', 'ReasumeController@index')
         ->name('reasume');
 
+    Route::get('buyTicket/traceFind', 'TraceFindController@index')
+        ->name('buyTicket');
+
 });
+
+Route::get('buyTicket/traceFind', 'TraceFindController@index')
+    ->name('buyTicket');
 
 
 Route::get('getStations/{trace_name}', 'ArrivesController@get');

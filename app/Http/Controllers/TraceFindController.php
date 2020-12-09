@@ -43,17 +43,6 @@ class TraceFindController extends Controller
             'trace_end' => $repository->traceEnd
         ]); 
     }
-    //Helper private methods
 
-    /**
-     * Convert date and hour to DateTime.
-     *
-     * @param  TicketRequest $request
-     * @return DateTime
-     */
-    private function convertDate(TicketRequest &$request){
-        $dateOfJourney = $request->input('date-input').' '.$request->input('hour-input').":00";
-        return DateTime::createFromFormat('Y-m-d H:i:s', $dateOfJourney);
-    }
 
 }

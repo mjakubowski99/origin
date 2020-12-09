@@ -20,11 +20,11 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/welcome.css') }}" rel="stylesheet">
 </head>
-<body>
-    <nav class="navbar fixed-top navbar-expand-md shadow-sm bg-dark" style="border-bottom: 2px solid: black;" >
+<body style="background: linear-gradient(rgba(0, 0, 0, .4), rgba(0, 0, 0, .4)), url('{{asset('storage/forms-photo.jpg')}}') no-repeat center center fixed;">
+    <nav class="navbar fixed-top navbar-expand-md bg-light" style="border-bottom: 2px solid: black; border-top: 2px solid: black;" >
         <div class="container">
             
-            <a class="text-light h2" href="{{ url('/') }}">
+            <a class="text-dark h2" href="{{ url('/') }}">
                 TrainService
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -42,21 +42,21 @@
                     <!-- Authentication Links -->
                     @guest
                         <li class="nav-item">
-                            <a class="mr-2 auth-link h5 mr-3" href="{{ route('login') }}">{{ __('Login') }}</a>
+                            <a class="mr-2 auth-link text-dark h5 mr-3" href="{{ route('login') }}">{{ __('Login') }}</a>
                         </li>
                         @if (Route::has('register'))
                             <li class="nav-item">
-                                <a class="ml-2 auth-link h5" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                <a class="ml-2 text-dark auth-link h5" href="{{ route('register') }}">{{ __('Register') }}</a>
                             </li>
                         @endif
                     @else
                         <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link text-light dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                            <a id="navbarDropdown" class="nav-link text-dark dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                 {{ Auth::user()->name }}
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item btn btn-primary" href="{{ route('logout') }}"
+                                <a class="dropdown-item btn btn-primary text-dark" href="{{ route('logout') }}"
                                    onclick="event.preventDefault();
                                                  document.getElementById('logout-form').submit();">
                                     {{ __('Logout') }}

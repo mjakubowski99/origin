@@ -5,6 +5,7 @@
        <form method="POST" @submit="checkIfSameCountOfPlacesWasChoosen" :action="this.$props.payForTicketRoute" class="mb-2 flex-row text-center mb-5">
             <input type="hidden" name="_token" v-bind:value="this.$props.csrf">
             <input type="hidden" name="clicked" v-bind:value="JSON.stringify(this.clicked)">
+            <input type="hidden" name="arrive_ids" v-bind:value="this.$props.arriveIds">
             <button type="submit" class="btn btn-sm btn-success"> Zatwierdz wybor </button>
         </form> 
     </div>
@@ -14,7 +15,7 @@
     import PlacesInTrainView from './PlacesInTrainView.vue';
 
     export default {
-        props: ['splitedPlacesArray', 'placesArray', 'payForTicketRoute', 'csrf'],
+        props: ['splitedPlacesArray', 'placesArray', 'payForTicketRoute', 'csrf', 'arriveIds'],
         data(){
             return{
                 clicked: [],

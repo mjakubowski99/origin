@@ -8,8 +8,9 @@ class ReasumeController extends Controller
 {
     public function index(Request $request){
         $places = json_decode( $request->input('clicked') );
+        $arrives = json_decode( $request->input('arrive_ids') );
 
-        dd( $places );
+        
         return view('reasume.index');
     }
 }

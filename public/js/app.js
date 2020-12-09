@@ -1950,9 +1950,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['places', 'payForTicketRoute', 'csrf'],
+  props: ['places', 'payForTicketRoute', 'csrf', 'arriveIds'],
   data: function data() {
     return {
       splitedPlacesArray: this.splitPlaceFromDifferentCar(this.splitPlacesFromDifferentAttribute(this.convertToArray(this.$props.places), 'train_id'))
@@ -2156,9 +2157,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['splitedPlacesArray', 'placesArray', 'payForTicketRoute', 'csrf'],
+  props: ['splitedPlacesArray', 'placesArray', 'payForTicketRoute', 'csrf', 'arriveIds'],
   data: function data() {
     return {
       clicked: [],
@@ -38677,7 +38679,8 @@ var render = function() {
             csrf: this.$props.csrf,
             splitedPlacesArray: this.splitedPlacesArray,
             placesArray: this.$props.places,
-            "pay-for-ticket-route": this.$props.payForTicketRoute
+            "pay-for-ticket-route": this.$props.payForTicketRoute,
+            "arrive-ids": this.$props.arriveIds
           }
         })
       ],
@@ -38979,6 +38982,11 @@ var render = function() {
           _c("input", {
             attrs: { type: "hidden", name: "clicked" },
             domProps: { value: JSON.stringify(this.clicked) }
+          }),
+          _vm._v(" "),
+          _c("input", {
+            attrs: { type: "hidden", name: "arrive_ids" },
+            domProps: { value: this.$props.arriveIds }
           }),
           _vm._v(" "),
           _c(
