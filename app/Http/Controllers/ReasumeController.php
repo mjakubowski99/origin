@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Repositories\TraceRepository;
 
 class ReasumeController extends Controller
 {
@@ -10,7 +11,12 @@ class ReasumeController extends Controller
         $places = json_decode( $request->input('clicked') );
         $arrives = json_decode( $request->input('arrive_ids') );
 
-        
-        return view('reasume.index');
+        $repository = new TraceRepository();
+        $traces = $repository->traceNamesForArrives($arrives);
+     
+        return view('reasume.index', [
+            'places' => $places,
+            'arrives' => $arrives
+        ]);
     }
 }

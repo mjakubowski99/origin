@@ -99,7 +99,7 @@
              <br>
              <img src="{{asset('storage/image-for-profiles.jpg')}}" class="w-50"/>
              <br>
-             <button type="search" class="btn text-light mt-1" style="background-color: #9933ff;"> Kup bilet </button>
+             <a href="{{ url('/buyTicket/traceFind') }}" class="btn text-light mt-1" style="background-color: #9933ff;"> Kup bilet </a>
         </div>
         <div class="text-center p-5" style="border-bottom: 1px solid #e6e6e6;">
             <div class="h5" style="font-weight: bold;"> Nasz system zapewnia możliwość sprawnych zakupów online </div>
