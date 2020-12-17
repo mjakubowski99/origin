@@ -71,7 +71,7 @@
                     </div>
                 @endif
 
-                <form class="text-center mt-5 mb-5" id="trace-form" action="/buyTicket" method="POST" autocomplete="off">
+                <form class="text-center mt-5 mb-5" id="trace-form" action="{{route('buyTicketStore')}}" method="POST" autocomplete="off">
                         @csrf
                         <div class="col-md-6 shadow-box center bg-white box" style="background-color: #e6e6e6;">
                             <h1 class="h1 pt-5 text-dark" style="border-bottom: 1px solid; border-color:#e6e6e6;"> Wybierz przejazd </h1>

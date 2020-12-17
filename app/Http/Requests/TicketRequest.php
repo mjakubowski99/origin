@@ -24,8 +24,8 @@ class TicketRequest extends FormRequest
     public function rules()
     {
         return [
-            'trace-input-1' => 'required',
-            'trace-input-2' => 'required',
+            'trace-input-1' => ['required', 'exists:stations,NAME'],
+            'trace-input-2' => ['required', 'exists:stations,NAME'],
             'date-input' => [ 'required', 'date'],
             'hour-input' => [ 'required', 'regex:/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/']
         ]; 
@@ -39,6 +39,8 @@ class TicketRequest extends FormRequest
 
     public function messages(){
         return [
+            'trace-input-1.exists' => 'Taka stacja początkowa nie istnieje w naszej bazie',
+            'trace-input-2.exists' => 'Taka stacja końcowa nie istnieje w naszej bazie',
             'trace-input-1.required' => 'Nazwa trasy jest wymagana',
             'trace-input-2.required' => 'Nazwa trasy jest wymagana',
             'date-input.required' => 'Data jest wymagana',

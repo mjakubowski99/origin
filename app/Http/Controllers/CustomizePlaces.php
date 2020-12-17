@@ -60,60 +60,6 @@ class CustomizePlaces extends Controller
             return redirect('/customizeTrain')->with('numericError', 'Podaj wartosc liczbowa'); 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy()
-    {
-        PlacesTrains::truncate();
-        Place::truncate();
-        Train::truncate();
-
-    }
-
-      /**
-     * Check if we have a integer value
-     *
-     * @param  array $toValidate
-     * @return boolean
-     */
     private function validator($toValidate){
         foreach( $toValidate as $toVal ){
             if ( !is_numeric( $toVal ) ){

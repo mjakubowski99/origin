@@ -34,11 +34,9 @@
                             <p class="card-text h1"> 11:20 <button class="btn btn-primary"> >> </button> 15:30</p>
                             <a class="btn btn-success" data-toggle="modal" data-target="#exampleModal" >Zobacz trasę</a>
                             <br/>
-                            <form action="{{route('choosePlace')}}" method="GET">
+                            <form action="{{route('choosePlace')}}" method="POST">
                                 @csrf
                                 <input type="hidden" name="arrive_data" value="{{ json_encode($founded_arrive) }}" />
-                                <label for="howManyPlaces"> Wpisz ilosc miejsc </label>
-                                <input name="howManyPlaces" class="form-control" style="width: 50%; margin-left: auto; margin-right: auto;"/>
                                 <button type="submit" class="btn btn-success"> Wybierz miejsce </button>
                             </form>
                         </div>

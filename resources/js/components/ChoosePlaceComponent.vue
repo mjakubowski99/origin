@@ -1,37 +1,48 @@
-/*    <ul>
-            <li v-for="p in place" :key="p.PLACE_ID"> 
-                {{ p.PLACE_ID }}
-            </li>
-        </ul> */
-
-
 <template>
     <div>
+        <div class="d-flex justify-content-center">
+            <places :csrf="this.$props.csrf" 
+                    :splitedPlacesArray="this.splitedPlacesArray" 
+                    :placesArray="this.$props.places" 
+                    :pay-for-ticket-route="this.$props.payForTicketRoute"
+                    :arrive-ids="this.$props.arriveIds"
+            />
+        </div>
     </div>
 </template>
 
 <script>
+    import places from './PlacesViewComponent.vue'
     export default {
-        props: ['places'],
+        props: ['places', 'payForTicketRoute', 'csrf', 'arriveIds'],
         data() {
            return{
-                place: this.splitPlacesFromDifferentTrain( this.convertToArray(this.$props.places)  )
+                splitedPlacesArray: this.splitPlaceFromDifferentCar( 
+                    this.splitPlacesFromDifferentAttribute( this.convertToArray(this.$props.places), 'train_id') 
+                ),
            }
         },
-        mounted(){
-            console.log(this.place);
+        components: {
+            'places': places
         },
         methods: {
             convertToArray(places){
+                console.log( this.$props.payForTicketRoute );
                 return JSON.parse(places);
             }, 
-            splitPlacesFromDifferentTrain(places){
+            comparePlaceAttributes(place1, place2, attribute){
+                if( attribute == 'car' )
+                    return place1.car == place2.car;
+                else if( attribute == 'train_id' )
+                    return place1.TRAIN_ID == place2.TRAIN_ID;
+            },
+            splitPlacesFromDifferentAttribute(places, attribute){
                 let splited_arrays = [];
                 for(let i=0; i<places.length-1; i++){
                     let same_train_places = [ places[i] ];
                     let j=i;
-                    while( places[i].TRAIN_ID == places[i+1].TRAIN_ID ){
-                        same_train_places.push( places[i+1] );
+                    while( j+1<places.length && this.comparePlaceAttributes(places[j], places[j+1], attribute) ){
+                        same_train_places.push( places[j+1] );
                         j++;
                     }
                     splited_arrays.push(same_train_places);
@@ -39,7 +50,15 @@
                 }
 
                 return splited_arrays;
-            }
-        }
+            },
+            splitPlaceFromDifferentCar(splitedPlacesArray){
+                let splited = [];
+                splitedPlacesArray.forEach( (element) => {
+                    splited.push( this.splitPlacesFromDifferentAttribute(element, 'car') );
+                });
+                
+                return splited;
+            },
+        },
     }
 </script>

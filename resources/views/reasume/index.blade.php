@@ -1,0 +1,2 @@
+@extends('reasume.layout')
+

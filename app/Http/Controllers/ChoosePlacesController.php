@@ -4,9 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\ArriveRepository;
+use App\Repositories\PlaceRepository;
+use App\Repositories\TrainRepository;
 
 class ChoosePlacesController extends Controller
 {
+    public $places;
+    public $trains;
+    public $arrives;
+
+    public function __construct(){
+        $this->places = new PlaceRepository;
+        $this->trains = new TrainRepository;
+        $this->arrives = new ArriveRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -18,16 +30,6 @@ class ChoosePlacesController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -35,64 +37,16 @@ class ChoosePlacesController extends Controller
      */
     public function store(Request $request)
     {
-        $arrive_data = json_decode( $request->input('arrive_data') );
-        $arrive_data = collect( $arrive_data );
-        $arrive_ids  = $arrive_data->pluck('arrive_id')->groupBy('arrive_id')->first()->unique();
-
-        $train = DB::table('trains')
-                    ->select(['id', 'name'])
-                    ->whereIn('id', $arrive_ids)->get();
-
-        $places = DB::table('train_places')->select(['TRAIN_ID','PLACE_ID'])->whereIn('TRAIN_ID', $train->pluck('id') )->get();
+        $arrive_ids = $this->arrives
+                        ->arriveIds( $request->input('arrive_data') );
+        $train_ids = $this->trains
+                        ->trainForArriveId($arrive_ids);
+        $places = $this->places
+                        ->placesForTrain( $train_ids );
 
         return view('choosePlaces.index', [ 
             'arrive_ids' => $arrive_ids,
             'places' => \json_encode($places)
         ]);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }
